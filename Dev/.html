@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>jQuery UI Example Page</title>
+		<!--- Intiate JQuery UI, CSS -->
+		<link href="css/smoothness/jquery-ui-1.9.2.custom.css" rel="stylesheet">
+		<script src="js/jquery-1.8.3.js"></script>
+		<script src="js/jquery-ui-1.9.2.custom.js"></script>
+		<style>
+		.dialog_form th {
+			text-align: left;
+		}
+		.dialog_form textarea, .dialog_form input [type = text]{
+			width: 320px;
+			height: 240px;
+		}
+		</style>
+		<script>
+			$(document).ready(function() {
+				$('#create_button').button().click(function() {
+					var create_dialog = $('#dialog_window_1');
+					var create_button = $(this);
+					if( create_dialog.dialog('isOpen') ) {
+						create_button.button('option', 'label', 'Create a new Window');
+						create_dialog.dialog('close');
+					} else {
+						create_button.button('option', 'label', 'Close Window');
+						create_dialog.dialog('open');
+					}
+				});
+				
+				$('#dialog_window_1').dialog({
+					width: 'auto',
+					height: 'auto',
+					autoOpen : false,
+					buttons: [
+						{
+							text: 'Create',
+							click: function() {
+								var div_count = $('.dialog_window').length + 1;
+								var div_id = 'dialog_window_' + div_count;
+								var div_title = $('#new_window_title').val();
+								var div_content = $('#new_window_content').val();
+								var buttons = new Array();
+								if( $('#alertbutton').is(':checked') ) {
+									buttons.push({
+										text: 'ALERT',
+										click: function() {
+											alert('ALERTING from Dialog Widnow: ' + div_title);
+										}
+									});
+								}
+								
+								if( $('#closebutton').is(':checked') ) {
+									buttons.push({
+										text: 'CLOSE',
+										click: function() {
+											$('#' + div_id).dialog('close');
+										}
+									});
+								}
+								
+								$('body').append('<div class="dialog_window" id="' + div_id + '">' + div_content + '</div>');
+				
+								var dialog = $('#' + div_id).dialog({
+									width: 'auto',
+									height: 'auto',
+									title : div_title,
+									autoOpen : true,
+									buttons: buttons
+								});
+							}
+						}
+					]
+				});
+				$('#buttonlist').buttonset();
+			});
+		</script>
+		</head>
+	<body>
+		<div id = "dialog_window_1" class="dialog_window" title = "New Painting">
+		<p> 
+			<h3> Create a new <code>Painting</code> </h3>
+			<table class = "dialog_form">  
+				<tr> 
+					<th>Window Title </th>
+				</tr>
+				<tr>
+				<td><input type= "file" id="new_window_title" /></td>
+				</tr>
+				<tr>
+					<td>
+						<textarea id = "new_window_content"></textarea>
+					</td>
+				</tr>
+				<tr>
+					<th>
+						window Buttons
+					</th>
+				</tr>
+				<tr>
+					<td id="buttonlist">
+						<input type ="checkbox" id="alertbutton" /><label for="alertbutton">Alert</label>
+						<input type ="checkbox" id="closebutton" /><label for="closebutton">Close</label>
+						<input type ="checkbox" id="clonebutton" /><label for="clonebutton">Clone</label>
+					</td>
+				</tr>
+			</table>
+		</p>
+	</div>
+	<button id ="create_button">Create new window</button>
+	</body>
+	</html>

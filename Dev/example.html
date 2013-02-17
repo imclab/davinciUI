@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>ARTBYVIDEO UI ALPHA</title>
+		<!--- Intiate JQuery UI, CSS -->
+		<link href="css/smoothness/jquery-ui-1.9.2.custom.css" rel="stylesheet">
+		<script src="js/jquery-1.8.3.js"></script>
+		<script src="js/jquery-ui-1.9.2.custom.js"></script>
+		<script src="js/three.min.js"></script>
+    	<script src="js/TrackballControls.js"></script>
+		<style>
+		.dialog_form th {
+			text-align: left;
+		}
+		.dialog_form textarea, .dialog_form input [type = text]{
+			width: 320px;
+			height: 240px;
+		}
+		#toolbar {
+            position: "absolute";
+			padding: 15px 1px;
+		}
+		#container {
+		
+
+		}
+
+		}
+		</style>
+		<script>
+
+		var container;
+    	var camera, controls, scene, projector, renderer;
+   		var objects = [], plane;
+   		var width = window.innerWidth;
+        var height = window.innerHeight;
+
+   		var mouse = new THREE.Vector2(),
+    	offset = new THREE.Vector3(),
+    	INTERSECTED, SELECTED;
+
+    	var cursor_tools = {
+					ROTATE: 1,
+					MOVE: 2
+				}
+			$(document).ready(function() {
+                <!--- Load toolbar and intiate dialog window --->
+				var choice = cursor_tools.MOVE;
+
+
+				$( "#load" ).button({
+					text: false,
+      				icons: {
+        			primary: "ui-icon-folder-open"
+        		}
+      				
+    			})
+				 .click(function() {
+				 	var create_dialog = $('#dialog_window_1');
+					var create_button = $(this);
+					if( create_dialog.dialog('isOpen') ) {
+						create_button.button('option', 'icons', {primary: "ui-icon-folder-open"});
+						create_dialog.dialog('close');
+					} else {
+						create_button.button('option', 'icons', {primary: "ui-icon-closethick"});
+						create_dialog.dialog('open');
+					}
+				});
+
+				$( "#save" ).button({
+      				text: false,
+      				icons: {
+        			primary: "ui-icon-disk"
+      				}
+    			});
+				$( "#rotate" ).button({
+      				text: false,
+      				icons: {
+        			primary: "ui-icon-arrowrefresh-1-e"
+      				}
+    			})
+    			.click(function() {
+    				choice = cursor_tools.ROTATE;
+    				alert(choice);
+
+
+    			});
+    			$( "#move" ).button({
+      				text: false,
+      				icons: {
+        			primary: "ui-icon-arrow-4"
+      				}
+    			})
+    			.click(function() {
+    				choice = cursor_tools.MOVE;
+    				alert(choice);
+    			});
+
+				
+				$('#dialog_window_1').dialog({
+					width: 'auto',
+					height: 'auto',
+					autoOpen : false,
+					buttons: [
+						{
+							text: 'Create',
+							click: function() {
+								//var div_count = $('.dialog_window').length + 1;
+								//var div_id = 'dialog_window_' + div_count;
+								//var div_title = $('#new_window_title').val();
+								//var div_content = $('#new_window_content').val();
+								//var buttons = new Array();
+                                var button = $("#load");
+                                var dialog = $(this);
+                                addPainting();
+                                button.button('option','icons', {primary: "ui-icon-folder-open"});
+                                dialog.dialog('close');
+                                
+										}
+                                }]
+								
+							});
+
+			init();
+    		animate();
+
+			});
+
+
+		function init() {
+
+        container = document.getElementById('container');
+        camera = new THREE.PerspectiveCamera(70, width / height, 1, 10000);
+        camera.position.z = 500;
+
+        scene = new THREE.Scene();
+
+        renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.sortObjects = false;
+        renderer.setSize(width, height);
+
+        
+        container.appendChild(renderer.domElement);
+        controls = new THREE.TrackballControls(camera, renderer.domElement);
+        controls.rotateSpeed = 1.0;
+        controls.zoomSpeed = 1.2;
+        controls.panSpeed = 0.8;
+        controls.noZoom = false;
+        controls.noPan = false;
+        controls.staticMoving = true;
+        controls.dynamicDampingFactor = 0.3;
+
+        var light = new THREE.DirectionalLight(0xffffff, 2);
+        light.position.set(1, 1, 1).normalize();
+        scene.add(light);
+
+        var light = new THREE.DirectionalLight(0xffffff);
+        light.position.set(-1, -1, -1).normalize();
+        scene.add(light);
+        var ground = new THREE.Mesh(new THREE.PlaneGeometry(1000,1000,16,16), new THREE.MeshBasicMaterial({ color: 0xc0c0c0, opacity: 1, transparent: false, wireframe: true}));
+        
+        ground.position.x = 0;
+        ground.position.y = 0;
+        ground.position.z = 0;
+
+        ground.rotation.x = Math.PI;
+        ground.visible = true;
+        scene.add(ground);
+        plane = new THREE.Mesh(new THREE.PlaneGeometry(2000, 2000, 8, 8), new THREE.MeshBasicMaterial({ color: 0x000000, opacity: 0.25, transparent: true, wireframe: true }));
+        plane.visible = true;
+        scene.add(plane);
+
+        projector = new THREE.Projector();
+
+
+
+        renderer.domElement.addEventListener('mousemove', onDocumentMouseMove, false);
+        renderer.domElement.addEventListener('mousedown', onDocumentMouseDown, false);
+        renderer.domElement.addEventListener('mouseup', onDocumentMouseUp, false);
+
+        window.addEventListener('resize', onWindowResize, false);
+
+    }
+
+    function onWindowResize() {
+
+        camera.aspect = width / height;
+        camera.updateProjectionMatrix();
+
+        renderer.setSize(width, height);
+
+    }
+
+    function onDocumentMouseMove(event) {
+
+        event.preventDefault();
+        mouse.x = ((event.clientX - renderer.domElement.offsetLeft)/ renderer.domElement.width) * 2 - 1;
+        mouse.y = -((event.clientY - renderer.domElement.offsetTop) / renderer.domElement.height) * 2 + 1;
+
+        var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
+        projector.unprojectVector(vector, camera);
+
+        var ray = new THREE.Ray(camera.position, vector.subSelf(camera.position).normalize());
+
+
+        if (SELECTED) {
+
+            var intersects = ray.intersectObject(plane);
+            SELECTED.position.copy(intersects[0].point.subSelf(offset));
+            return;
+
+        }
+
+
+        var intersects = ray.intersectObjects(objects);
+
+        if (intersects.length > 0) {
+
+            if (INTERSECTED != intersects[0].object) {
+
+                if (INTERSECTED) INTERSECTED.material.color.setHex(INTERSECTED.currentHex);
+
+                INTERSECTED = intersects[0].object;
+                INTERSECTED.currentHex = INTERSECTED.material.color.getHex();
+
+                plane.position.copy(INTERSECTED.position);
+                plane.lookAt(camera.position);
+
+            }
+
+            container.style.cursor = 'pointer';
+
+        } else {
+
+            if (INTERSECTED) INTERSECTED.material.color.setHex(INTERSECTED.currentHex);
+
+            INTERSECTED = null;
+
+            container.style.cursor = 'auto';
+
+        }
+
+    }
+
+    function onDocumentMouseDown(event) {
+
+        event.preventDefault();
+
+        var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
+        projector.unprojectVector(vector, camera);
+
+        var ray = new THREE.Ray(camera.position, vector.subSelf(camera.position).normalize());
+
+        var intersects = ray.intersectObjects(objects);
+
+        if (intersects.length > 0) {
+
+            controls.enabled = false;
+
+            SELECTED = intersects[0].object;
+
+            var intersects = ray.intersectObject(plane);
+            offset.copy(intersects[0].point).subSelf(plane.position);
+
+            container.style.cursor = 'move';
+
+        }
+
+    }
+
+    function onDocumentMouseUp(event) {
+
+        event.preventDefault();
+
+        controls.enabled = true;
+
+        if (INTERSECTED) {
+
+            plane.position.copy(INTERSECTED.position);
+
+            SELECTED = null;
+
+        }
+
+        container.style.cursor = 'auto';
+
+    }
+
+    //
+
+    function animate() {
+
+        requestAnimationFrame(animate);
+
+        render();
+
+    }
+
+    function render() {
+
+        controls.update();
+
+        renderer.render(scene, camera);
+
+    }
+    function setTexture(image,frame){
+        //TODO set THREE.Imageutils.loadTexture("image");
+    }
+    function addPainting(){
+            alert("alerting from addPainting");
+            var geometry = new THREE.CubeGeometry(100,100,100);
+            var object = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({ color: Math.random() * 0xffffff }));
+
+            object.position.x = Math.random() * 800 - 400;
+            object.position.y = Math.random() * 800 - 400;
+            object.position.z = Math.random() * 800 - 400;
+
+            object.rotation.x = (Math.random() * 360) * Math.PI / 180;
+            object.rotation.y = (Math.random() * 360) * Math.PI / 180;
+            object.rotation.z = (Math.random() * 360) * Math.PI / 180;
+
+            object.scale.x = Math.random() + 0.5;
+            object.scale.y = Math.random() + 0.5;
+            object.scale.z = Math.random() + 0.5;
+
+            scene.add(object);
+            objects.push(object);
+
+    }
+
+
+		</script>
+		</head>
+	<body>
+		
+		<div id = "dialog_window_1" class="dialog_window" title = "New Painting">
+		<p> 
+			<h3> Create a new <code>Painting</code> </h3>
+			<table class = "dialog_form">  
+				<tr> 
+					<th>File</th>
+				</tr>
+				<tr>
+				<td><input type= "file" id="new_window_title" /></td>
+				</tr>
+				<tr>
+					<th>Description</th>
+				</tr>
+				<tr>
+					<td>
+						<textarea id = "new_window_content"></textarea>
+					</td>
+			</table>
+		</p>
+	</div>
+	<span id="toolbar" class="ui-widget-header ui-corner-all">
+  <button id="save">save</button>
+  <button id="load">Create painting</button>
+  <button id="rotate">toggle rotate</button>
+  <button id="move">toggle move</button>
+
+  </span>
+  <div id ="container"></div>
+	</body>
+	</html>
