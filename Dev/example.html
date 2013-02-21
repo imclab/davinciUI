@@ -9,6 +9,8 @@
 		<script src="js/jquery-ui-1.9.2.custom.js"></script>
 		<script src="js/three.min.js"></script>
     	<script src="js/TrackballControls.js"></script>
+        <script src="js/ImageUtils.js"></script>
+
 		<style>
 		.dialog_form th {
 			text-align: left;
@@ -113,6 +115,7 @@
 								//var buttons = new Array();
                                 var button = $("#load");
                                 var dialog = $(this);
+                                //setTexture("images/ml.jpg");
                                 addPainting();
                                 button.button('option','icons', {primary: "ui-icon-folder-open"});
                                 dialog.dialog('close');
@@ -201,13 +204,13 @@
         var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
         projector.unprojectVector(vector, camera);
 
-        var ray = new THREE.Ray(camera.position, vector.subSelf(camera.position).normalize());
+        var ray = new THREE.Raycaster(camera.position, vector.sub(camera.position).normalize());
 
 
         if (SELECTED) {
 
             var intersects = ray.intersectObject(plane);
-            SELECTED.position.copy(intersects[0].point.subSelf(offset));
+            SELECTED.position.copy(intersects[0].point.sub(offset));
             return;
 
         }
@@ -250,7 +253,7 @@
         var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
         projector.unprojectVector(vector, camera);
 
-        var ray = new THREE.Ray(camera.position, vector.subSelf(camera.position).normalize());
+        var ray = new THREE.Raycaster(camera.position, vector.sub(camera.position).normalize());
 
         var intersects = ray.intersectObjects(objects);
 
@@ -261,7 +264,7 @@
             SELECTED = intersects[0].object;
 
             var intersects = ray.intersectObject(plane);
-            offset.copy(intersects[0].point).subSelf(plane.position);
+            offset.copy(intersects[0].point).sub(plane.position);
 
             container.style.cursor = 'move';
 
@@ -304,11 +307,35 @@
         renderer.render(scene, camera);
 
     }
-    function setTexture(image,frame){
-        //TODO set THREE.Imageutils.loadTexture("image");
+    function setTexture(image){
+        var material = new THREE.MeshBasicMaterial({
+            map: THREE.Imageutils.loadTexture(image, new THREE.UVMapping() ,function (){
+            renderer.render(scene,camera);
+             })
+        });
+        var geometry = new THREE.CubeGeometry(100,100,100);
+        var object = new THREE.Mesh(geometry,new THREE.MeshBasicMaterial({map: texture}));
+
+        object.position.x = 0;
+        object.position.y = 0;
+        object.position.z = 0;
+        object.position.x = Math.random() * 800 - 400;
+        object.position.y = Math.random() * 800 - 400;
+        object.position.z = Math.random() * 800 - 400;
+        object.rotation.x = (Math.random() * 360) * Math.PI / 180;
+        object.rotation.y = (Math.random() * 360) * Math.PI / 180;
+        object.rotation.z = (Math.random() * 360) * Math.PI / 180;
+
+        object.scale.x = Math.random() + 0.5;
+        object.scale.y = Math.random() + 0.5;
+        object.scale.z = Math.random() + 0.5;
+
+        scene.add(object);
+        objects.push(object);
+
+
     }
     function addPainting(){
-            alert("alerting from addPainting");
             var geometry = new THREE.CubeGeometry(100,100,100);
             var object = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({ color: Math.random() * 0xffffff }));
 
