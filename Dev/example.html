@@ -115,8 +115,8 @@
 								//var buttons = new Array();
                                 var button = $("#load");
                                 var dialog = $(this);
-                                //setTexture("images/ml.jpg");
-                                addPainting();
+                                setTexture("images/ml.jpg");
+                               // addPainting();
                                 button.button('option','icons', {primary: "ui-icon-folder-open"});
                                 dialog.dialog('close');
                                 
@@ -134,10 +134,13 @@
 		function init() {
 
         container = document.getElementById('container');
-        camera = new THREE.PerspectiveCamera(70, width / height, 1, 10000);
-        camera.position.z = 500;
+        camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 20000);
+
 
         scene = new THREE.Scene();
+        scene.add(camera);
+        camera.position.set(0,150,400);
+        camera.lookAt(scene.position);
 
         renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.sortObjects = false;
@@ -161,18 +164,17 @@
         var light = new THREE.DirectionalLight(0xffffff);
         light.position.set(-1, -1, -1).normalize();
         scene.add(light);
-        var ground = new THREE.Mesh(new THREE.PlaneGeometry(1000,1000,16,16), new THREE.MeshBasicMaterial({ color: 0xc0c0c0, opacity: 1, transparent: false, wireframe: true}));
+        var ground = new THREE.Mesh(new THREE.PlaneGeometry(1000,1000,10,10), new THREE.MeshBasicMaterial({ color: 0xc0c0c0, opacity: 1, transparent: false, wireframe: true}));
         
-        ground.position.x = 0;
-        ground.position.y = 0;
-        ground.position.z = 0;
+        ground.position.y = -0.5;
 
-        ground.rotation.x = Math.PI;
         ground.visible = true;
         scene.add(ground);
+
         plane = new THREE.Mesh(new THREE.PlaneGeometry(2000, 2000, 8, 8), new THREE.MeshBasicMaterial({ color: 0x000000, opacity: 0.25, transparent: true, wireframe: true }));
         plane.visible = true;
         scene.add(plane);
+        setTexture("");
 
         projector = new THREE.Projector();
 
@@ -308,30 +310,31 @@
 
     }
     function setTexture(image){
-        var material = new THREE.MeshBasicMaterial({
-            map: THREE.Imageutils.loadTexture(image, new THREE.UVMapping() ,function (){
-            renderer.render(scene,camera);
-             })
-        });
-        var geometry = new THREE.CubeGeometry(100,100,100);
-        var object = new THREE.Mesh(geometry,new THREE.MeshBasicMaterial({map: texture}));
 
-        object.position.x = 0;
-        object.position.y = 0;
-        object.position.z = 0;
-        object.position.x = Math.random() * 800 - 400;
-        object.position.y = Math.random() * 800 - 400;
-        object.position.z = Math.random() * 800 - 400;
-        object.rotation.x = (Math.random() * 360) * Math.PI / 180;
-        object.rotation.y = (Math.random() * 360) * Math.PI / 180;
-        object.rotation.z = (Math.random() * 360) * Math.PI / 180;
+        var cubeGeometry = new THREE.CubeGeometry( 85, 85, 85 );
+        
+        var crateTexture = new THREE.ImageUtils.loadTexture( 'images/wl.jpg',new THREE.UVMapping(), function() {
+           render();
+        
+        } );
+        var crateMaterial = new THREE.MeshBasicMaterial( { map: crateTexture } );
+        var painting = new THREE.Mesh(cubeGeometry, crateMaterial);
+        painting.position.set(-60, 50, -100);
+        
+        painting.position.x = Math.random() * 800 - 400;
+        painting.position.y = Math.random() * 800 - 400;
+        painting.position.z = Math.random() * 800 - 400;
 
-        object.scale.x = Math.random() + 0.5;
-        object.scale.y = Math.random() + 0.5;
-        object.scale.z = Math.random() + 0.5;
+        painting.rotation.x = (Math.random() * 360) * Math.PI / 180;
+        painting.rotation.y = (Math.random() * 360) * Math.PI / 180;
+        painting.rotation.z = (Math.random() * 360) * Math.PI / 180;
 
-        scene.add(object);
-        objects.push(object);
+        painting.scale.x = Math.random() + 0.5;
+        painting.scale.y = Math.random() + 0.5;
+        painting.scale.z = Math.random() + 0.5;
+
+        scene.add(painting);
+        objects.push(painting);
 
 
     }
