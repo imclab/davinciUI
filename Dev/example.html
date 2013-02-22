@@ -312,14 +312,14 @@
 
 
         var materialArray = [];
+        materialArray.push(new THREE.MeshBasicMaterial( { color: 0xc0c0c0 }));
+        materialArray.push(new THREE.MeshBasicMaterial( { color: 0xc0c0c0 }));
+        materialArray.push(new THREE.MeshBasicMaterial( { color: 0xc0c0c0 }));
+        materialArray.push(new THREE.MeshBasicMaterial( { color: 0xc0c0c0 }));
         materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'images/ml.jpg' ) }));
-        materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'images/ml.jpg' ) }));
-        materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'images/ml.jpg' ) }));
-        materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'images/ml.jpg' ) }));
-        materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'images/ml.jpg' ) }));
-        materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'images/ml.jpg' ) }));
+        materialArray.push(new THREE.MeshBasicMaterial( { color: 0xc0c0c0 }));
 
-        var cubeGeometry = new THREE.CubeGeometry( 85, 85, 85, 1, 1, 1 );
+        var cubeGeometry = new THREE.CubeGeometry( 85, 85, 1 , 1, 1, 1 );
         var painting = new THREE.Mesh(cubeGeometry,new THREE.MeshFaceMaterial( materialArray ));
         painting.position.set(-60, 50, -100);
 
