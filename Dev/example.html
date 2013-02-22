@@ -174,7 +174,6 @@
         plane = new THREE.Mesh(new THREE.PlaneGeometry(2000, 2000, 8, 8), new THREE.MeshBasicMaterial({ color: 0x000000, opacity: 0.25, transparent: true, wireframe: true }));
         plane.visible = true;
         scene.add(plane);
-        setTexture("");
 
         projector = new THREE.Projector();
 
@@ -311,27 +310,18 @@
     }
     function setTexture(image){
 
-        var cubeGeometry = new THREE.CubeGeometry( 85, 85, 85 );
-        
-        var crateTexture = new THREE.ImageUtils.loadTexture( 'images/wl.jpg',new THREE.UVMapping(), function() {
-           render();
-        
-        } );
-        var crateMaterial = new THREE.MeshBasicMaterial( { map: crateTexture } );
-        var painting = new THREE.Mesh(cubeGeometry, crateMaterial);
+
+        var materialArray = [];
+        materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'images/ml.jpg' ) }));
+        materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'images/ml.jpg' ) }));
+        materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'images/ml.jpg' ) }));
+        materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'images/ml.jpg' ) }));
+        materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'images/ml.jpg' ) }));
+        materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'images/ml.jpg' ) }));
+
+        var cubeGeometry = new THREE.CubeGeometry( 85, 85, 85, 1, 1, 1 );
+        var painting = new THREE.Mesh(cubeGeometry,new THREE.MeshFaceMaterial( materialArray ));
         painting.position.set(-60, 50, -100);
-        
-        painting.position.x = Math.random() * 800 - 400;
-        painting.position.y = Math.random() * 800 - 400;
-        painting.position.z = Math.random() * 800 - 400;
-
-        painting.rotation.x = (Math.random() * 360) * Math.PI / 180;
-        painting.rotation.y = (Math.random() * 360) * Math.PI / 180;
-        painting.rotation.z = (Math.random() * 360) * Math.PI / 180;
-
-        painting.scale.x = Math.random() + 0.5;
-        painting.scale.y = Math.random() + 0.5;
-        painting.scale.z = Math.random() + 0.5;
 
         scene.add(painting);
         objects.push(painting);
