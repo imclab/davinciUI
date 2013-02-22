@@ -9,7 +9,6 @@
 		<script src="js/jquery-ui-1.9.2.custom.js"></script>
 		<script src="js/three.min.js"></script>
     	<script src="js/TrackballControls.js"></script>
-        <script src="js/ImageUtils.js"></script>
 
 		<style>
 		.dialog_form th {
@@ -115,7 +114,7 @@
 								//var buttons = new Array();
                                 var button = $("#load");
                                 var dialog = $(this);
-                                setTexture("images/ml.jpg");
+                                createPainting("images/ml.jpg");
                                // addPainting();
                                 button.button('option','icons', {primary: "ui-icon-folder-open"});
                                 dialog.dialog('close');
@@ -302,7 +301,7 @@
         renderer.render(scene, camera);
 
     }
-    function setTexture(image){
+    function createPainting(texUrl){
 
 
         var materialArray = [];
@@ -310,7 +309,7 @@
         materialArray.push(new THREE.MeshBasicMaterial( { color: 0xc0c0c0 }));
         materialArray.push(new THREE.MeshBasicMaterial( { color: 0xc0c0c0 }));
         materialArray.push(new THREE.MeshBasicMaterial( { color: 0xc0c0c0 }));
-        materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'images/ml.jpg' ) }));
+        materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( texUrl ) }));
         materialArray.push(new THREE.MeshBasicMaterial( { color: 0xc0c0c0 }));
 
         var cubeGeometry = new THREE.CubeGeometry( 85, 85, 1 , 1, 1, 1 );
