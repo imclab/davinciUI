@@ -1,21 +1,22 @@
-
-
-
 var container;
 var camera, controls, scene, projector, renderer;
 var objects = [], plane;
-var width = window.innerWidth;
-var height = window.innerHeight;
+var width;
+var height;
 
 var mouse = new THREE.Vector2(),
 offset = new THREE.Vector3(),INTERSECTED, SELECTED;
 
 
+function DaArt (height, width) {
+    this.height = height;
+    this.width = width;
 
-function init() {
+}
 
+DaArt.prototype.init = function() {
         container = document.getElementById('container');
-        var angle = 45, aspect = width / height, near = 0.1, far = 20000;
+        var angle = 45, aspect = this.width / this.height, near = 0.1, far = 20000;
         camera = new THREE.PerspectiveCamera(angle, aspect , near, far);
 
 
@@ -26,7 +27,7 @@ function init() {
 
         renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.sortObjects = false;
-        renderer.setSize(width, height);
+        renderer.setSize(this.width, this.height);
 
 
         container.appendChild(renderer.domElement);
@@ -67,24 +68,25 @@ function init() {
 
 
 
-        renderer.domElement.addEventListener('mousemove', onDocumentMouseMove, false);
-        renderer.domElement.addEventListener('mousedown', onDocumentMouseDown, false);
-        renderer.domElement.addEventListener('mouseup', onDocumentMouseUp, false);
+        renderer.domElement.addEventListener('mousemove', this.onDocumentMouseMove, false);
+        renderer.domElement.addEventListener('mousedown', this.onDocumentMouseDown, false);
+        renderer.domElement.addEventListener('mouseup', this.onDocumentMouseUp, false);
 
-        window.addEventListener('resize', onWindowResize, false);
-
-    }
-
-    function onWindowResize() {
-
-        camera.aspect = width / height;
-        camera.updateProjectionMatrix();
-
-        renderer.setSize(width, height);
+       // window.addEventListener('resize', this.onWindowResize, false);
 
     }
 
-    function onDocumentMouseMove(event) {
+   // DaArt.prototype.onWindowResize = function() {
+    //    var w = window.innerWidth;
+     //   var h = window.innerHeight;
+      //  camera.aspect = w / h;
+       // camera.updateProjectionMatrix();
+
+        //renderer.setSize(w, h);
+
+    //}
+
+    DaArt.prototype.onDocumentMouseMove = function(event) {
 
         event.preventDefault();
         mouse.x = ((event.clientX - renderer.domElement.offsetLeft)/ renderer.domElement.width) * 2 - 1;
@@ -129,7 +131,7 @@ function init() {
 
     }
 
-    function onDocumentMouseDown(event) {
+    DaArt.prototype.onDocumentMouseDown = function(event) {
 
         event.preventDefault();
 
@@ -155,7 +157,7 @@ function init() {
 
     }
 
-    function onDocumentMouseUp(event) {
+    DaArt.prototype.onDocumentMouseUp = function(event) {
 
         event.preventDefault();
 
@@ -188,10 +190,9 @@ function init() {
         controls.update();
 
         renderer.render(scene, camera);
-
     }
-    function createPainting(texUrl){
 
+    DaArt.prototype.createPainting = function (texUrl){
 
         var materialArray = [];
         materialArray.push(new THREE.MeshBasicMaterial( { color: 0xc0c0c0 }));

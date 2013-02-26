@@ -35,6 +35,7 @@
 					ROTATE: 1,
 					MOVE: 2
 				}
+        var tools = new DaArt(window.innerHeight, window.innerWidth);
 			$(document).ready(function() {
                 <!--- Load toolbar and intiate dialog window --->
 				var choice = cursor_tools.MOVE;
@@ -103,7 +104,7 @@
 								//var div_content = $('#new_window_content').val();
                                 var button = $("#load");
                                 var dialog = $(this);
-                                createPainting("images/ml.jpg");
+                                test.createPainting("images/ml.jpg");
                                 button.button('option','icons', {primary: "ui-icon-folder-open"});
                                 dialog.dialog('close');
                                 
@@ -111,8 +112,7 @@
                                 }]
 								
 							});
-
-			init();
+			tools.init();
     		animate();
 
 			});
