@@ -1,20 +1,19 @@
-var container;
-var camera, controls, scene, projector, renderer;
-var objects = [], plane;
-var width;
-var height;
-
-var mouse = new THREE.Vector2(),
-offset = new THREE.Vector3(),INTERSECTED, SELECTED;
 
 
-function DaArt (height, width) {
-    this.height = height;
-    this.width = width;
+    var cursor_tools = {
+                ROTATE: 1,
+                MOVE: 2
+            };
+    var container;
+    var camera, controls, scene, projector, renderer;
+    var objects = [], plane;
+    var width = window.innerWidth;
+    var height = window.innerHeight;
 
-}
+    var mouse = new THREE.Vector2(),
+    offset = new THREE.Vector3(),INTERSECTED, SELECTED;
 
-DaArt.prototype.init = function() {
+    function init()  {
         container = document.getElementById('container');
         var angle = 45, aspect = this.width / this.height, near = 0.1, far = 20000;
         camera = new THREE.PerspectiveCamera(angle, aspect , near, far);
@@ -75,8 +74,7 @@ DaArt.prototype.init = function() {
        // window.addEventListener('resize', this.onWindowResize, false);
 
     }
-
-   // DaArt.prototype.onWindowResize = function() {
+// DaArt.prototype.onWindowResize = function() {
     //    var w = window.innerWidth;
      //   var h = window.innerHeight;
       //  camera.aspect = w / h;
@@ -85,8 +83,7 @@ DaArt.prototype.init = function() {
         //renderer.setSize(w, h);
 
     //}
-
-    DaArt.prototype.onDocumentMouseMove = function(event) {
+   function onDocumentMouseMove(event) {
 
         event.preventDefault();
         mouse.x = ((event.clientX - renderer.domElement.offsetLeft)/ renderer.domElement.width) * 2 - 1;
@@ -131,7 +128,7 @@ DaArt.prototype.init = function() {
 
     }
 
-    DaArt.prototype.onDocumentMouseDown = function(event) {
+    function onDocumentMouseDown(event) {
 
         event.preventDefault();
 
@@ -157,7 +154,7 @@ DaArt.prototype.init = function() {
 
     }
 
-    DaArt.prototype.onDocumentMouseUp = function(event) {
+    function onDocumentMouseUp(event) {
 
         event.preventDefault();
 
@@ -192,7 +189,7 @@ DaArt.prototype.init = function() {
         renderer.render(scene, camera);
     }
 
-    DaArt.prototype.createPainting = function (texUrl){
+    function createPainting(texUrl) {
 
         var materialArray = [];
         materialArray.push(new THREE.MeshBasicMaterial( { color: 0xc0c0c0 }));
@@ -211,24 +208,79 @@ DaArt.prototype.init = function() {
 
 
     }
-    function addPainting(){
-            var geometry = new THREE.CubeGeometry(100,100,100);
-            var object = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({ color: Math.random() * 0xffffff }));
 
-            object.position.x = Math.random() * 800 - 400;
-            object.position.y = Math.random() * 800 - 400;
-            object.position.z = Math.random() * 800 - 400;
+$(document).ready(function() {
 
-            object.rotation.x = (Math.random() * 360) * Math.PI / 180;
-            object.rotation.y = (Math.random() * 360) * Math.PI / 180;
-            object.rotation.z = (Math.random() * 360) * Math.PI / 180;
+        var choice = cursor_tools.MOVE;
 
-            object.scale.x = Math.random() + 0.5;
-            object.scale.y = Math.random() + 0.5;
-            object.scale.z = Math.random() + 0.5;
+        $( "#load" ).button({
+            text: false,
+            icons: {
+            primary: "ui-icon-folder-open"
+        }
 
-            scene.add(object);
-            objects.push(object);
+        })
+         .click(function() {
+            var create_dialog = $('#dialog_window_1');
+            var create_button = $(this);
+            if( create_dialog.dialog('isOpen') ) {
+                create_button.button('option', 'icons', {primary: "ui-icon-folder-open"});
+                create_dialog.dialog('close');
+            } else {
+                create_button.button('option', 'icons', {primary: "ui-icon-closethick"});
+                create_dialog.dialog('open');
+            }
+        });
 
-    }
+        $( "#save" ).button({
+            text: false,
+            icons: {
+            primary: "ui-icon-disk"
+            }
+        });
+        $( "#rotate" ).button({
+            text: false,
+            icons: {
+            primary: "ui-icon-arrowrefresh-1-e"
+            }
+        })
+        .click(function() {
+            choice = cursor_tools.ROTATE;
+            alert(choice);
+
+
+        });
+        $( "#move" ).button({
+            text: false,
+            icons: {
+            primary: "ui-icon-arrow-4"
+            }
+        })
+        .click(function() {
+            choice = cursor_tools.MOVE;
+            alert(choice);
+        });
+
+
+        $('#dialog_window_1').dialog({
+            width: 'auto',
+            height: 'auto',
+            autoOpen : false,
+            buttons: [
+                {
+                    text: 'Create',
+                    click: function() {
+                        var button = $("#load");
+                        var dialog = $(this);
+                        createPainting("images/ml.jpg");
+                        button.button('option','icons', {primary: "ui-icon-folder-open"});
+                        dialog.dialog('close');
+
+                                }
+                        }]
+
+                    });
+        init();
+        animate();
+    });
 

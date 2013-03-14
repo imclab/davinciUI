@@ -4,12 +4,12 @@
 		<meta charset="utf-8">
 		<title>ARTBYVIDEO UI ALPHA</title>
 		<!--- Intiate JQuery UI, CSS -->
-		<link href="css/smoothness/jquery-ui-1.9.2.custom.css" rel="stylesheet">
-		<script src="js/jquery-1.8.3.js"></script>
-		<script src="js/jquery-ui-1.9.2.custom.js"></script>
+        <link href ="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/themes/smoothness/jquery-ui.css" rel="stylesheet">
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.min.js"></script>
 		<script src="js/three.min.js"></script>
     	<script src="js/TrackballControls.js"></script>
-        <script src ="js/DaArt.js"></script>
+        <script src ="js/TEST.js"></script>
 
 		<style>
 		.dialog_form th {
@@ -21,103 +21,14 @@
 		}
 		#toolbar {
             position: "absolute";
-			padding: 15px 1px;
+			padding: 14px 1px;
 		}
-		#container {
-		
-
-		}
+		body {
+            background-color: #cccccd;
+            overflow: hidden;
 
 		}
 		</style>
-		<script>
-    	var cursor_tools = {
-					ROTATE: 1,
-					MOVE: 2
-				}
-        var tools = new DaArt(window.innerHeight, window.innerWidth);
-			$(document).ready(function() {
-                <!--- Load toolbar and intiate dialog window --->
-				var choice = cursor_tools.MOVE;
-
-
-				$( "#load" ).button({
-					text: false,
-      				icons: {
-        			primary: "ui-icon-folder-open"
-        		}
-      				
-    			})
-				 .click(function() {
-				 	var create_dialog = $('#dialog_window_1');
-					var create_button = $(this);
-					if( create_dialog.dialog('isOpen') ) {
-						create_button.button('option', 'icons', {primary: "ui-icon-folder-open"});
-						create_dialog.dialog('close');
-					} else {
-						create_button.button('option', 'icons', {primary: "ui-icon-closethick"});
-						create_dialog.dialog('open');
-					}
-				});
-
-				$( "#save" ).button({
-      				text: false,
-      				icons: {
-        			primary: "ui-icon-disk"
-      				}
-    			});
-				$( "#rotate" ).button({
-      				text: false,
-      				icons: {
-        			primary: "ui-icon-arrowrefresh-1-e"
-      				}
-    			})
-    			.click(function() {
-    				choice = cursor_tools.ROTATE;
-    				alert(choice);
-
-
-    			});
-    			$( "#move" ).button({
-      				text: false,
-      				icons: {
-        			primary: "ui-icon-arrow-4"
-      				}
-    			})
-    			.click(function() {
-    				choice = cursor_tools.MOVE;
-    				alert(choice);
-    			});
-
-				
-				$('#dialog_window_1').dialog({
-					width: 'auto',
-					height: 'auto',
-					autoOpen : false,
-					buttons: [
-						{
-							text: 'Create',
-							click: function() {
-								//var div_count = $('.dialog_window').length + 1;
-								//var div_id = 'dialog_window_' + div_count;
-								//var div_title = $('#new_window_title').val();
-								//var div_content = $('#new_window_content').val();
-                                var button = $("#load");
-                                var dialog = $(this);
-                                test.createPainting("images/ml.jpg");
-                                button.button('option','icons', {primary: "ui-icon-folder-open"});
-                                dialog.dialog('close');
-                                
-										}
-                                }]
-								
-							});
-			tools.init();
-    		animate();
-
-			});
-
-		</script>
 		</head>
 	<body>
 		
