@@ -9,7 +9,7 @@
     var objects = [], plane;
     var width = window.innerWidth;
     var height = window.innerHeight;
-
+    var current = null;
     var mouse = new THREE.Vector2(),
     offset = new THREE.Vector3(),INTERSECTED, SELECTED;
 
@@ -144,7 +144,7 @@
             controls.enabled = false;
 
             SELECTED = intersects[0].object;
-
+            current = SELECTED;
             var intersects = ray.intersectObject(plane);
             offset.copy(intersects[0].point).sub(plane.position);
 
@@ -209,59 +209,138 @@
 
     }
 
-$(document).ready(function() {
+var guiScaleConfigData = function() {
+    this.scalex = 1.0;
+    this.scaley = 1.0;
+    this.scalez = 1.0;
+    this.wireframe = false;
 
-        var choice = cursor_tools.MOVE;
+    };
 
-        $( "#load" ).button({
-            text: false,
-            icons: {
-            primary: "ui-icon-folder-open"
+var guiRotConfigData = function() {
+    this.rotationx = 0;
+    this.rotationy = 0;
+    this.rotationz = 0;
+
+};
+
+var guiPosConfigData = function() {
+    this.positionx = -30.0;
+    this.positiony = 20.0;
+    this.positionz = 0;
+
+};
+
+var guiRoomConfigData = function () {
+
+    this.create = (function() {
+        var create_dialog = $('#dialog_window_1').dialog('open');
+    });
+
+    this.color1 = Math.random * 0xffffff;
+};
+
+function initGUI() {
+    var gui = new dat.GUI();
+
+    var guiPos =  gui.addFolder('Postition');
+    var guiRot =  gui.addFolder('Rotation');
+    var guiScale =  gui.addFolder('Scale');
+    var guiRoom = gui.addFolder('Room');
+
+    var guiPosConfig = new guiPosConfigData();
+    var guiRotConfig = new guiRotConfigData();
+    var guiScaleConfig = new guiScaleConfigData();
+    var guiRoomConfig = new guiRoomConfigData();
+
+    guiPos.open();
+    guiRot.open();
+    guiScale.open();
+    guiRoom.open();
+    guiPos.add( guiPosConfig, 'positionx', -70, 70 ).onChange( function(){
+        if(current != null){
+            current.position.x = (guiPosConfig.positionx);
         }
+    });
+    guiPos.add( guiPosConfig, 'positiony', 0, 70).onChange( function(){
+        if(current != null){
+            current.position.y = (guiPosConfig.positiony);
+        }
+    });
 
-        })
-         .click(function() {
-            var create_dialog = $('#dialog_window_1');
-            var create_button = $(this);
-            if( create_dialog.dialog('isOpen') ) {
-                create_button.button('option', 'icons', {primary: "ui-icon-folder-open"});
-                create_dialog.dialog('close');
-            } else {
-                create_button.button('option', 'icons', {primary: "ui-icon-closethick"});
-                create_dialog.dialog('open');
-            }
-        });
+    guiPos.add( guiPosConfig, 'positionz', -70, 70 ).onChange( function(){
+        if(current != null){
+            current.position.z = (guiPosConfig.positionz);
+        }
+    });
+    guiRot.add( guiRotConfig, 'rotationx', -3.14, 3.14 ).step(0.01).onChange( function(){
+        if(current != null){
+            current.rotation.x = (guiRotConfig.rotationx);
+        }
+    });
+    guiRot.add( guiRotConfig, 'rotationy', -3.14, 3.14 ).step(0.01).onChange( function(){
+        if(current != null){
+            current.rotation.y = (guiRotConfig.rotationy);
+        }
+    });
 
-        $( "#save" ).button({
-            text: false,
-            icons: {
-            primary: "ui-icon-disk"
-            }
-        });
-        $( "#rotate" ).button({
-            text: false,
-            icons: {
-            primary: "ui-icon-arrowrefresh-1-e"
-            }
-        })
-        .click(function() {
-            choice = cursor_tools.ROTATE;
-            alert(choice);
+    guiRot.add( guiRotConfig, 'rotationz', -3.14, 3.14 ).step(0.01).onChange( function(){
+        if(current != null){
+            current.rotation.z = (guiRotConfig.rotationz);
+        }
+    });
+
+    guiScale.add( guiScaleConfig, 'scalex', 1 , 10 ).step(0.01).onChange( function(){
+        if(current != null){
+            current.scale.x = (guiScaleConfig.scalex);
+        }
+    });
+    guiScale.add( guiScaleConfig, 'scaley', 1 , 10 ).step(0.01).onChange( function(){
+        if(current != null){
+            current.scale.y = (guiScaleConfig.scaley);
+        }
+    });
+
+    guiScale.add( guiScaleConfig, 'scalez', 1 , 10 ).step(0.01).onChange( function(){
+        if(current != null){
+            current.scale.z = (guiScaleConfig.scalez);
+        }
+    });
+    guiScale.add(guiScaleConfig, 'wireframe', false).onChange( function (){
+      if(current != null){
+            current.material.wireframe = (guiScaleConfig.wireframe);
+        }
+    });
+    guiRoom.add(guiRoomConfig,'create');
+}
 
 
-        });
-        $( "#move" ).button({
-            text: false,
-            icons: {
-            primary: "ui-icon-arrow-4"
-            }
-        })
-        .click(function() {
-            choice = cursor_tools.MOVE;
-            alert(choice);
-        });
+function dec2hex(i) {
+  var result = "0x000000";
+  if (i >= 0 && i <= 15) { result = "0x00000" + i.toString(16); }
+  else if (i >= 16 && i <= 255) { result = "0x0000" + i.toString(16); }
+  else if (i >= 256 && i <= 4095) { result = "0x000" + i.toString(16); }
+  else if (i >= 4096 && i <= 65535) { result = "0x00" + i.toString(16); }
+  else if (i >= 65535 && i <= 1048575) { result = "0x0" + i.toString(16); }
+  else if (i >= 1048575 ) { result = '0x' + i.toString(16); }
+  //console.log(result);
+ return result
+}
 
 
+    //guiBox3.addColor( box3Config, 'color1', color ).onChange( function() {
+// console.log( box3Config.color1 );
+  //box3.material.color.setHex( dec2hex(box3Config.color1) );
+  //box3.material.ambient.setHex( dec2hex(box3Config.color1) );
+//} );
+
+
+
+
+
+
+
+$(document).ready(function() {
         $('#dialog_window_1').dialog({
             width: 'auto',
             height: 'auto',
@@ -270,10 +349,8 @@ $(document).ready(function() {
                 {
                     text: 'Create',
                     click: function() {
-                        var button = $("#load");
                         var dialog = $(this);
                         createPainting("images/ml.jpg");
-                        button.button('option','icons', {primary: "ui-icon-folder-open"});
                         dialog.dialog('close');
 
                                 }
@@ -281,6 +358,6 @@ $(document).ready(function() {
 
                     });
         init();
+        initGUI();
         animate();
-    });
-
+});
