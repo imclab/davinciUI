@@ -52,7 +52,7 @@
         var floorMaterial = new THREE.MeshBasicMaterial( { map: floorTexture } );
         var floorGeometry = new THREE.PlaneGeometry(1000, 1000, 10, 10);
         var floor = new THREE.Mesh(floorGeometry, floorMaterial);
-        floor.position.y = -0.5;
+        floor.position.y = -40;
         floor.rotation.x = - Math.PI/2
         floor.doubleSided = true;
         scene.add(floor);
@@ -201,10 +201,11 @@
 
         var cubeGeometry = new THREE.CubeGeometry( 85, 85, 1 , 1, 1, 1 );
         var painting = new THREE.Mesh(cubeGeometry,new THREE.MeshFaceMaterial( materialArray ));
-        painting.position.set(-60, 50, -100);
+        painting.position.set(0, 0, 0);
 
         scene.add(painting);
         objects.push(painting);
+        current = painting;
 
 
     }
