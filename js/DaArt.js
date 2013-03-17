@@ -335,8 +335,7 @@ function initGUI() {
     guiRoom.add(guiRoomConfig,'create');
     guiRoom.add(guiRoomConfig,'resetcamera');
     guiRoom.add(guiRoomConfig, 'room', ['room1','room2', 'room3']).onChange( function () {
-    //TODO
-
+        loadJSONObj('test');
     });
     guiRoom.addColor(guiRoomConfig,'color1').onChange( function () {
     //TODO
@@ -348,7 +347,7 @@ function loadJSONObj(roomName) {
 
     var loader = new THREE.JSONLoader();
 
-    loader.load('model/' + roomName + '.js', function ( geometry ) {
+    loader.load('models/' + test + '.js', function ( geometry ) {
         var room = new THREE.Mesh( geometry, new THREE.MeshNormalMaterial() );
         room.scale.set(10,10,10);
         room.position.x = 0;
