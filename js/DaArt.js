@@ -419,6 +419,7 @@ $(document).ready(function() {
                     click: function() {
                         var dialog = $(this);
                         createPainting("images/ml.jpg");
+                        $("#new_window_content").val("");
                         dialog.dialog('close');
 
                                 }
