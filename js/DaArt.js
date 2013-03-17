@@ -5,6 +5,7 @@
                 MOVE: 2
             };
     var container;
+    var nextId = 0;
     var camera, controls, scene, projector, renderer;
     var objects = [], plane;
     var width = window.innerWidth;
@@ -15,7 +16,7 @@
 
     function init()  {
         container = document.getElementById('container');
-        var angle = 45, aspect = this.width / this.height, near = 0.1, far = 20000;
+        var angle = 45, aspect = width / height, near = 0.1, far = 20000;
         camera = new THREE.PerspectiveCamera(angle, aspect , near, far);
 
 
@@ -26,7 +27,7 @@
 
         renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.sortObjects = false;
-        renderer.setSize(this.width, this.height);
+        renderer.setSize(width, height);
 
 
         container.appendChild(renderer.domElement);
@@ -60,7 +61,7 @@
 
 
         plane = new THREE.Mesh(new THREE.PlaneGeometry(2000, 2000, 8, 8), new THREE.MeshBasicMaterial({ color: 0x000000, opacity: 0.25, transparent: true, wireframe: true }));
-        plane.visible = true;
+        plane.visible = false;
         scene.add(plane);
 
         projector = new THREE.Projector();
@@ -115,12 +116,17 @@
                 plane.lookAt(camera.position);
 
             }
+            if(INTERSECTED != null) {
+            $("#" + objects.indexOf(INTERSECTED)).tooltip().tooltip('open');
+            }
 
             container.style.cursor = 'pointer';
 
         } else {
 
-
+            if(INTERSECTED != null) {
+                $("#" + objects.indexOf(INTERSECTED)).tooltip('close');
+            }
             INTERSECTED = null;
             container.style.cursor = 'auto';
 
@@ -196,17 +202,25 @@
         materialArray.push(new THREE.MeshBasicMaterial( { color: 0xc0c0c0 }));
         materialArray.push(new THREE.MeshBasicMaterial( { color: 0xc0c0c0 }));
         materialArray.push(new THREE.MeshBasicMaterial( { color: 0xc0c0c0 }));
-        materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( texUrl ) }));
+        materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( texUrl )} ));
         materialArray.push(new THREE.MeshBasicMaterial( { color: 0xc0c0c0 }));
 
         var cubeGeometry = new THREE.CubeGeometry( 85, 85, 1 , 1, 1, 1 );
         var painting = new THREE.Mesh(cubeGeometry,new THREE.MeshFaceMaterial( materialArray ));
         painting.position.set(0, 0, 0);
-
+        //var painting = new Painting(nextId);
+        //painting.createObject(texUrl);
         scene.add(painting);
+        nextId++;
         objects.push(painting);
         current = painting;
+        generateTooltip(current);
 
+
+    }
+    function generateTooltip(currentObject) {
+
+        $("#container").append('<div id=' + objects.indexOf(currentObject) + ' title=' + '"' + $('#new_window_content').val() + '"' + "></div>");
 
     }
 
@@ -237,7 +251,11 @@ var guiRoomConfigData = function () {
     this.create = (function() {
         var create_dialog = $('#dialog_window_1').dialog('open');
     });
+    this.resetcamera = function () {
+        camera.position.set(0,150,400);
+        camera.lookAt(scene.position);
 
+    }
     this.color1 = Math.random * 0xffffff;
 };
 
@@ -313,6 +331,7 @@ function initGUI() {
         }
     });
     guiRoom.add(guiRoomConfig,'create');
+    guiRoom.add(guiRoomConfig,'resetcamera');
 }
 
 
@@ -335,9 +354,33 @@ function dec2hex(i) {
   //box3.material.ambient.setHex( dec2hex(box3Config.color1) );
 //} );
 
+function Painting(id) {
 
+this.id = id;
+this.objectMesh;
 
+}
 
+Painting.prototype.createObject = function (texUrl) {
+    var materialArray = [];
+    materialArray.push(new THREE.MeshBasicMaterial( { color: 0xc0c0c0 }));
+    materialArray.push(new THREE.MeshBasicMaterial( { color: 0xc0c0c0 }));
+    materialArray.push(new THREE.MeshBasicMaterial( { color: 0xc0c0c0 }));
+    materialArray.push(new THREE.MeshBasicMaterial( { color: 0xc0c0c0 }));
+    materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( texUrl )} ));
+    materialArray.push(new THREE.MeshBasicMaterial( { color: 0xc0c0c0 }));
+
+    var cubeGeometry = new THREE.CubeGeometry( 85, 85, 1 , 1, 1, 1 );
+    this.objectMesh = new THREE.Mesh(cubeGeometry,new THREE.MeshFaceMaterial( materialArray ));
+    this.objectMesh.position.set(0, 0, 0);
+
+}
+Painting.prototype.hash = function () {
+    return this.id;
+}
+Painting.prototype.ObjectInstance = function () {
+    return this.objectMesh;
+}
 
 
 
