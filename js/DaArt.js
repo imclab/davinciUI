@@ -334,6 +334,20 @@ function initGUI() {
     guiRoom.add(guiRoomConfig,'resetcamera');
 }
 
+function loadJSONObj(roomName) {
+
+    var loader = new THREE.JSONLoader();
+
+    loader.load('model/' + roomName + '.js', function ( geometry ) {
+        var room = new THREE.Mesh(geometry. new THREE.MeshNormalMaterial());
+        room.scale.set(10,10,10);
+        room.position.x = 0;
+        room.position.y = 0;
+        room.position.z = 0;
+        scene.add(room);
+
+    });
+}
 
 function dec2hex(i) {
   var result = "0x000000";
