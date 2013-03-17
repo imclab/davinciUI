@@ -223,7 +223,7 @@
         $("#container").append('<div id=' + objects.indexOf(currentObject) + ' title=' + '"' + $('#new_window_content').val() + '"' + "></div>");
 
     }
-
+var color = Math.random() * 0xffffff;
 var guiScaleConfigData = function() {
     this.scalex = 1.0;
     this.scaley = 1.0;
@@ -254,10 +254,13 @@ var guiRoomConfigData = function () {
     this.resetcamera = function () {
         camera.position.set(0,150,400);
         camera.lookAt(scene.position);
+        //Will not work because of a bug in controls
 
     }
-    this.color1 = Math.random * 0xffffff;
+    this.room = 'room1';
+    this.color1 = [ 0, 128, 255 ];
 };
+
 
 function initGUI() {
     var gui = new dat.GUI();
@@ -271,7 +274,6 @@ function initGUI() {
     var guiRotConfig = new guiRotConfigData();
     var guiScaleConfig = new guiScaleConfigData();
     var guiRoomConfig = new guiRoomConfigData();
-
     guiPos.open();
     guiRot.open();
     guiScale.open();
@@ -332,8 +334,16 @@ function initGUI() {
     });
     guiRoom.add(guiRoomConfig,'create');
     guiRoom.add(guiRoomConfig,'resetcamera');
-}
+    guiRoom.add(guiRoomConfig, 'room', ['room1','room2', 'room3']).onChange( function () {
+    //TODO
 
+    });
+    guiRoom.addColor(guiRoomConfig,'color1').onChange( function () {
+    //TODO
+
+    });
+}
+/*
 function loadJSONObj(roomName) {
 
     var loader = new THREE.JSONLoader();
@@ -347,7 +357,7 @@ function loadJSONObj(roomName) {
         scene.add(room);
 
     });
-}
+}*/
 
 function dec2hex(i) {
   var result = "0x000000";
