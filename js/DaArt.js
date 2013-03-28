@@ -1,15 +1,10 @@
 
-
-    var cursor_tools = {
-                ROTATE: 1,
-                MOVE: 2
-            };
     var container;
     var nextId = 0;
     var camera, controls, scene, projector, renderer;
     var objects = [], plane;
-    var width = window.innerWidth;
-    var height = window.innerHeight;
+    var width = window.innerWidth,
+        height = window.innerHeight;
     var current = null;
     var mouse = new THREE.Vector2(),
     offset = new THREE.Vector3(),INTERSECTED, SELECTED;
@@ -71,19 +66,19 @@
         renderer.domElement.addEventListener('mousemove', this.onDocumentMouseMove, false);
         renderer.domElement.addEventListener('mousedown', this.onDocumentMouseDown, false);
         renderer.domElement.addEventListener('mouseup', this.onDocumentMouseUp, false);
-
-       // window.addEventListener('resize', this.onWindowResize, false);
+        window.addEventListener('resize', this.onWindowResize, false);
 
     }
-// DaArt.prototype.onWindowResize = function() {
-    //    var w = window.innerWidth;
-     //   var h = window.innerHeight;
-      //  camera.aspect = w / h;
-       // camera.updateProjectionMatrix();
+    function onWindowResize () {
+        var w = window.innerWidth;
+        var h = window.innerHeight;
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
 
-        //renderer.setSize(w, h);
+        renderer.setSize(w, h);
 
-    //}
+    }
+
    function onDocumentMouseMove(event) {
 
         event.preventDefault();
@@ -335,7 +330,7 @@ function initGUI() {
     guiRoom.add(guiRoomConfig,'create');
     guiRoom.add(guiRoomConfig,'resetcamera');
     guiRoom.add(guiRoomConfig, 'room', ['room1','room2', 'room3']).onChange( function () {
-        loadJSONObj('test');
+        loadJSONObj();
     });
     guiRoom.addColor(guiRoomConfig,'color1').onChange( function () {
     //TODO
@@ -347,7 +342,7 @@ function loadJSONObj(roomName) {
 
     var loader = new THREE.JSONLoader();
 
-    loader.load('models/' + test + '.js', function ( geometry ) {
+    loader.load('models/test.js', function ( geometry ) {
         var room = new THREE.Mesh( geometry, new THREE.MeshNormalMaterial() );
         room.scale.set(10,10,10);
         room.position.x = 0;
