@@ -1,56 +1,40 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<title>ARTBYVIDEO UI ALPHA</title>
-		<!--- Intiate JQuery UI, CSS -->
-        <link href ="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/themes/dark-hive/jquery-ui.css" rel="stylesheet">
+    <head>
+        <meta charset="utf-8">
+        <title>ARTBYVIDEO UI ALPHA</title>
+        <!--- Intiate JQuery UI, CSS -->
+        <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/themes/dark-hive/jquery-ui.css" rel="stylesheet">
+        <link href="css/daart.css" rel="stylesheet">
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
         <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.min.js"></script>
-		<script src="js/three.min.js"></script>
-    	<script src="js/TrackballControls.js"></script>
+        <script src="js/three.min.js"></script>
+        <script src="js/TrackballControls.js"></script>
         <script src="js/DAT.js"></script>
         <script src ="js/DaArt.js"></script>
-
-		<style>
-		.dialog_form th {
-			text-align: left;
-		}
-		.dialog_form textarea, .dialog_form input [type = text]{
-			width: 320px;
-			height: 240px;
-            background-color: #cccccd;
-
-		}		
-        body {
-            background-color: #cccccd;
-            overflow: hidden;
-		}
-		</style>
-		</head>
-	<body>
-		
-		<form id = "dialog_window_1" enctype="multipart/form-data" class="dialog_window" title = "New Painting">
-		<p> 
-			<h3> Create a new <code>Painting</code> </h3>
-			<table class = "dialog_form">  
-				<tr> 
-					<th>File</th>
-				</tr>
-				<tr>
-				<td><input type="file" name="file" id="fileUpload" /></td>
-				</tr>
-				<tr>
-					<th>Description</th>
-				</tr>
-				<tr>
-					<td>
-						<textarea id = "formContent" name="desc"></textarea>
-					</td>
-			</table>
-		</p>
-	</form> 
-  <div id ="container"></div>
-  <div id ="content"></div>
-	</body>
-	</html>
+        </head>
+    <body>
+        <form id = "dialog_window_1" enctype="multipart/form-data" class="dialog_window" title = "New Painting">
+        <p> 
+            <h3> Create a new <code>Painting</code> </h3>
+            <table class = "dialog_form">  
+                <tr> 
+                    <th>File</th>
+                </tr>
+                <tr>
+                <td><input type="file" name="file" id="fileUpload" /></td>
+                </tr>
+                <tr>
+                    <th>Description</th>
+                </tr>
+                <tr>
+                    <td>
+                        <textarea id = "formContent" name="desc"></textarea>
+                    </td>
+            </table>
+        </p>
+        </form> 
+    <div id ="container"></div>
+    <div id ="content"></div>
+    </body>
+</html>

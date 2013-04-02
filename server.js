@@ -44,6 +44,38 @@ server.post('/file', function(request, response) {
     });
 
 });
-server.listen(port);
+//TODO
+server.post('/login', function (request, response) {
 
+
+});
+//TODO
+server.get('/logout', function (requst, response) {
+    req.session.destroy(function (){
+        res.direct('/example.html');
+    });
+
+});
+
+server.listen(port);
+//TODO
+function restrict(req, res, next) {
+    if(req.session.user) {
+        next();
+    }
+    else {
+        req.session.error = 'Access Denied';
+        res.redirect('/example.html'); //TODO
+    }
+
+}
+//TODO
+function auth(userName, pass, callback) {
+    //TODO query to tb
+    hash(pass, salt function (err, hash){
+        if(err){return callback(new Error("user not found"));}
+        if(hash === user.hash) {return callback(null, user);}
+        callback(new Error("invalid password"));
+    });
+}
 
