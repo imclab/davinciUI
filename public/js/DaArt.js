@@ -190,7 +190,7 @@
         renderer.render(scene, camera);
     }
 
-    function createPainting(texUrl) {
+    function createPainting(texUrl, tooltip) {
 
         var materialArray = [];
         materialArray.push(new THREE.MeshBasicMaterial( { color: 0xc0c0c0 }));
@@ -209,13 +209,13 @@
         nextId++;
         objects.push(painting);
         current = painting;
-        generateTooltip(current);
+        generateTooltip(current, tooltip);
 
 
     }
-    function generateTooltip(currentObject) {
+    function generateTooltip(currentObject, tooltip) {
 
-        $("#container").append('<div id=' + objects.indexOf(currentObject) + ' title=' + '"' + $('#new_window_content').val() + '"' + "></div>");
+        $("#container").append('<div id=' + objects.indexOf(currentObject) + ' title=' + '"' + tooltip + '"' + "></div>");
 
     }
 var color = Math.random() * 0xffffff;
@@ -401,23 +401,22 @@ Painting.prototype.ObjectInstance = function () {
     return this.objectMesh;
 }
 
-function postit(url, dataQuery, callbackFunction) {
-    alert("post");
+function postit(url, data, callbackFunction) {
+
     $.ajax({
         url: url,
-        type: 'post',
-        contentType: 'application/json',
+        type: 'POST',
+        processData: false,
+        contentType: false,
         datatype: 'json',
-        data: dataQuery,
+        data: data,
         success: function (response) {
-            callbackFunction(response.url);
+            callbackFunction(response.url, response.tooltip);
         },
         error: function (){}
     });
 }
-function submitForm() {
 
-}
 
 $(document).ready(function() {
     $('#dialog_window_1').dialog({
@@ -426,7 +425,6 @@ $(document).ready(function() {
             autoOpen : false,
             buttons:
                 {
-
                     "Create": function() {
                         var dialog = $(this);
                         $(this).submit();
@@ -435,17 +433,13 @@ $(document).ready(function() {
 
                     }
                 }
-
     });
 
-
     $('#dialog_window_1').submit(function () {
-        var params = {};
-        $.each($(this).serializeArray(), function(index, field){
-            alert(field.name + " " + field.value);
-                params[field.name] = field.value;
-        });
-        postit('/file', params, createPainting);
+        var fd = new FormData();
+        fd.append('file', $("#fileUpload").get(0).files[0]);
+        fd.append('desc', $("#formContent").val());
+        postit('/file', fd, createPainting);
         return false;
     });
 

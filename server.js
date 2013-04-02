@@ -4,10 +4,11 @@
  */
 var express = require("express"),
     server = express(),
+    fs = require('fs');
     port = parseInt(process.env.PORT, 10) || 4567;
 server.configure(function(){
   server.use(express.methodOverride());
-  server.use(express.bodyParser());
+  server.use(express.bodyParser({uploadDir: 'public/uploads'}));
   server.use(express.static(__dirname + '/public'));
   server.use(express.errorHandler({
     dumpExceptions: true,
@@ -26,8 +27,21 @@ server.get("/", function(request, response) {
  */
 server.post('/file', function(request, response) {
     console.log(JSON.stringify(request.files));
-    response.send({url: "images/ml.jpg"});
+    console.log(JSON.stringify(request.body));
 
+    var uploadedFile = request.files.file;
+    var tmpPath = uploadedFile.path;
+    var name = uploadedFile.name;
+    var targetPath = 'public/uploads/' + name;
+
+    fs.rename(tmpPath, targetPath, function (err){
+        if(err) {throw err;}
+        fs.unlink(tmpPath, function (){
+            console.log("file uploaded");
+            response.send({url: 'uploads/' + name, tooltip: request.body.desc});
+        });
+
+    });
 
 });
 server.listen(port);
