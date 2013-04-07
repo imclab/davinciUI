@@ -1,0 +1,14 @@
+.dialog_form th {
+    text-align: left;
+}
+.dialog_form textarea, .dialog_form input [type = text]{
+    width: 320px;
+    height: 240px;
+    background-color: #cccccd;
+
+}		
+body {
+    background-color: #cccccd;
+    overflow: hidden;
+}
+
