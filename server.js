@@ -1,6 +1,5 @@
 
 /**
- * Init server on port 4567, set to use static file handeling, set errorhandling
  */
 var express = require("express"),
     server = express(),
