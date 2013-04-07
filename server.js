@@ -46,9 +46,22 @@ server.post('/file', function(request, response) {
 });
 //TODO
 server.post('/login', function (request, response) {
+    auth(request.body.userName, reqeust.body.password, function (err, user) {
+        if(user) {
+            request.session.regenerate(function (){
+                request.session.user = user;
+                request.session.success = "TODO" +user.name;
+                response.redirect('/example.html');
 
+            });
+        }
+        else {
+            request.session.error = "ERROR TODO";
+            response.redirect('/example.html');
+        }
 
-});
+    });
+}
 //TODO
 server.get('/logout', function (requst, response) {
     req.session.destroy(function (){
@@ -72,6 +85,7 @@ function restrict(req, res, next) {
 //TODO
 function auth(userName, pass, callback) {
     //TODO query to tb
+    console.log("authenticating %s:%s", name pass);
     hash(pass, salt function (err, hash){
         if(err){return callback(new Error("user not found"));}
         if(hash === user.hash) {return callback(null, user);}
